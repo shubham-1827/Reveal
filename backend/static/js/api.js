@@ -1,19 +1,24 @@
 // api.js
 
+const API_BASE = "";
+
 export async function uploadExecutable(formData) {
-  return fetch("/upload", {
+  return fetch(`${API_BASE}/upload`, {
     method: "POST",
     body: formData,
   });
 }
 
-/*
-Future API endpoints
-for AI integration
-*/
+export async function fetchFunctions() {
+  return fetch(`${API_BASE}/functions`);
+}
+
+export async function fetchFunction(name) {
+  return fetch(`${API_BASE}/function/${name}`);
+}
 
 export async function explainFunction(functionName, functionCode) {
-  return fetch("/explain", {
+  return fetch(`${API_BASE}/explain`, {
     method: "POST",
 
     headers: {
@@ -28,7 +33,7 @@ export async function explainFunction(functionName, functionCode) {
 }
 
 export async function generateSummary(code) {
-  return fetch("/summary", {
+  return fetch(`${API_BASE}/summary`, {
     method: "POST",
 
     headers: {

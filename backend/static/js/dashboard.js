@@ -1,4 +1,5 @@
 // dashboard.js
+import { fetchFunction } from "./api.js";
 
 const rawCode = document.getElementById("rawCode");
 
@@ -9,6 +10,8 @@ const functionList = document.getElementById("functionList");
 const functionExplanation = document.getElementById("functionExplanation");
 
 const summaryContent = document.getElementById("summaryContent");
+
+let selectedFunctionElement = null;
 
 export function renderDashboard(data) {
   renderRawCode(data);
@@ -97,7 +100,9 @@ function createFunctionItem(func) {
     </div>
   `;
 
-  item.addEventListener("click", () => handleFunctionClick(func, item));
+  item.addEventListener("click", async () => {
+    await handleFunctionClick(func.name, item);
+  });
 
   return item;
 }
@@ -109,41 +114,73 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;");
 }
 
-function handleFunctionClick(func, selectedItem) {
-  clearActiveFunctions();
+async function handleFunctionClick(functionName, element) {
+  try {
+    updateSelectedFunction(element);
 
-  selectedItem.classList.add("active");
+    functionExplanation.innerHTML = `
+      <div class="loading-state">
+        Loading function...
+      </div>
+    `;
 
+    const response = await fetchFunction(functionName);
+
+    if (!response.ok) {
+      throw new Error("Failed to load function");
+    }
+
+    const data = await response.json();
+
+    renderFunctionCode(data);
+  } catch (error) {
+    console.error(error);
+
+    functionExplanation.innerHTML = `
+      <div class="empty-state">
+        Failed to load function.
+      </div>
+    `;
+  }
+}
+
+function updateSelectedFunction(element) {
+  if (selectedFunctionElement) {
+    selectedFunctionElement.classList.remove("active");
+  }
+
+  element.classList.add("active");
+
+  selectedFunctionElement = element;
+}
+
+function renderFunctionCode(data) {
   functionExplanation.innerHTML = `
-    <p class="loading-text">
-      AI explanation generation
-      will appear here.
-    </p>
+    <div class="function-details">
 
-    <br>
+      <div class="function-title">
+        ${data.name}
+      </div>
 
-    <pre class="code-viewer">
-      <code
-        class="language-c"
-        id="selectedFunctionCode"
-      >
-  ${escapeHtml(func.code)}
-      </code>
-    </pre>
+      <div class="function-meta">
+        0x${data.address}
+      </div>
+
+      <pre class="code-viewer small-code-viewer">
+        <code
+          class="language-c"
+          id="selectedFunctionCode"
+        >
+${escapeHtml(data.code)}
+        </code>
+      </pre>
+
+    </div>
   `;
 
-  // for syntax highlighting in the code viewer
   const selectedCode = document.getElementById("selectedFunctionCode");
 
   Prism.highlightElement(selectedCode);
-}
-
-function clearActiveFunctions() {
-  const items = document.querySelectorAll(".function-item");
-
-  items.forEach((item) => {
-    item.classList.remove("active");
-  });
 }
 
 function renderSummary(data) {

@@ -76,6 +76,14 @@ h2 {
   font-size: 14px;
 }
 
+.loading-state {
+  color: #7aa2f7;
+
+  font-size: 14px;
+
+  font-family: "JetBrains Mono", monospace;
+}
+
 .code-viewer,
 .function-list,
 .explanation-content {
@@ -213,6 +221,8 @@ h2 {
   overflow-y: auto;
 
   scroll-behavior: smooth;
+
+  scrollbar-width: thin;
 }
 
 .function-item {
@@ -229,10 +239,14 @@ h2 {
 
 .function-item:hover {
   background-color: #2f3549;
+
+  padding-left: 22px;
 }
 
 .function-item.active {
   background-color: #364a82;
+
+  border-left: 3px solid #7aa2f7;
 }
 
 .function-name {
@@ -286,6 +300,40 @@ h2 {
   line-height: 1.8;
 
   scroll-behavior: smooth;
+}
+
+.function-details {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.function-title {
+  font-size: 16px;
+
+  font-weight: 700;
+
+  color: #7aa2f7;
+}
+
+.function-meta {
+  font-size: 13px;
+
+  color: #7d8590;
+
+  font-family: "JetBrains Mono", monospace;
+}
+
+.small-code-viewer {
+  height: auto;
+
+  max-height: 420px;
+
+  border: 1px solid #414868;
+
+  border-radius: 8px;
 }
 
 /* BUTTONS */

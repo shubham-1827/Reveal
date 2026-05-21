@@ -24,6 +24,8 @@ from backend.services.filter_service import (
     generate_filtered_code,
 )
 
+from backend.services.session_service import store_functions
+
 router = APIRouter()
 
 
@@ -65,11 +67,13 @@ async def upload_executable(
 
     filtered_functions = filter_functions(functions)
 
-    # testing filtered functions
-    for func in filtered_functions:
-        print(func.name)
+    # # testing filtered functions
+    # for func in filtered_functions:
+    #     print(func.name)
 
     filtered_code = generate_filtered_code(filtered_functions)
+
+    store_functions(filtered_functions)
 
     print(f"Filtered down to {len(filtered_functions)} functions")
 
