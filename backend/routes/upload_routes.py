@@ -15,6 +15,10 @@ from backend.services.ghidra_service import (
     run_ghidra_analysis,
 )
 
+from backend.services.parser_service import (
+    parse_decompiled_file,
+)
+
 router = APIRouter()
 
 
@@ -45,6 +49,14 @@ async def upload_executable(
     saved_path = await save_upload(file)
 
     decompiled_output = run_ghidra_analysis(saved_path)
+
+    functions = parse_decompiled_file(decompiled_output)
+
+    # testing parser service
+    print(f"Parsed {len(functions)} functions")
+
+    for function in functions[:5]:
+        print(function.name)
 
     return {
         "message": "Upload successful",
