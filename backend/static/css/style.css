@@ -38,3 +38,19 @@ h1 {
 .upload-button:hover {
   background-color: #1d4ed8;
 }
+
+.upload-panel {
+  margin-top: 32px;
+  padding: 24px;
+  max-width: 500px;
+
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 10px;
+}
+
+.upload-status {
+  margin-top: 16px;
+  color: #9ca3af;
+  font-size: 14px;
+}
