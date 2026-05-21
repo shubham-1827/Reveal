@@ -73,12 +73,27 @@ async def upload_executable(
 
     print(f"Filtered down to {len(filtered_functions)} functions")
 
+    with open(
+        decompiled_output,
+        "r",
+        encoding="utf-8",
+    ) as output_file:
+
+        raw_code = output_file.read()
+
     return {
         "message": "Upload successful",
         "filename": file.filename,
-        "saved_to": saved_path,
-        "decompiled_output": decompiled_output,
+        "raw_code": raw_code,
+        "filtered_code": filtered_code,
         "total_functions": len(functions),
         "filtered_functions": len(filtered_functions),
-        "filtered_code": filtered_code,
+        "functions": [
+            {
+                "name": func.name,
+                "address": func.address,
+                "code": func.code,
+            }
+            for func in filtered_functions
+        ],
     }
