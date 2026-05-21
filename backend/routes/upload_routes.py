@@ -19,6 +19,11 @@ from backend.services.parser_service import (
     parse_decompiled_file,
 )
 
+from backend.services.filter_service import (
+    filter_functions,
+    generate_filtered_code,
+)
+
 router = APIRouter()
 
 
@@ -53,14 +58,27 @@ async def upload_executable(
     functions = parse_decompiled_file(decompiled_output)
 
     # testing parser service
-    print(f"Parsed {len(functions)} functions")
+    # print(f"Parsed {len(functions)} functions")
 
-    for function in functions[:5]:
-        print(function.name)
+    # for function in functions[:5]:
+    #     print(function.name)
+
+    filtered_functions = filter_functions(functions)
+
+    # testing filtered functions
+    for func in filtered_functions:
+        print(func.name)
+
+    filtered_code = generate_filtered_code(filtered_functions)
+
+    print(f"Filtered down to {len(filtered_functions)} functions")
 
     return {
         "message": "Upload successful",
         "filename": file.filename,
         "saved_to": saved_path,
         "decompiled_output": decompiled_output,
+        "total_functions": len(functions),
+        "filtered_functions": len(filtered_functions),
+        "filtered_code": filtered_code,
     }
