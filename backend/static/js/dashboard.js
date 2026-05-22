@@ -1,5 +1,5 @@
 // dashboard.js
-import { fetchFunction } from "./api.js";
+import { fetchFunction, explainFunction } from "./api.js";
 
 const rawCode = document.getElementById("rawCode");
 
@@ -118,9 +118,11 @@ async function handleFunctionClick(functionName, element) {
   try {
     updateSelectedFunction(element);
 
+    functionExplanation.innerHTML = "";
+
     functionExplanation.innerHTML = `
       <div class="loading-state">
-        Loading function...
+        Generating explanation...
       </div>
     `;
 
@@ -130,15 +132,26 @@ async function handleFunctionClick(functionName, element) {
       throw new Error("Failed to load function");
     }
 
-    const data = await response.json();
+    const functionData = await response.json();
 
-    renderFunctionCode(data);
+    const explainResponse = await explainFunction(
+      functionData.name,
+      functionData.code,
+    );
+
+    if (!explainResponse.ok) {
+      throw new Error("Failed to generate explanation");
+    }
+
+    const explanationData = await explainResponse.json();
+
+    renderFunctionExplanation(functionData, explanationData.explanation);
   } catch (error) {
     console.error(error);
 
     functionExplanation.innerHTML = `
       <div class="empty-state">
-        Failed to load function.
+        Failed to generate explanation.
       </div>
     `;
   }
@@ -154,26 +167,47 @@ function updateSelectedFunction(element) {
   selectedFunctionElement = element;
 }
 
-function renderFunctionCode(data) {
+function renderFunctionExplanation(functionData, explanation) {
+  functionExplanation.replaceChildren();
   functionExplanation.innerHTML = `
     <div class="function-details">
 
       <div class="function-title">
-        ${data.name}
+        ${functionData.name}
       </div>
 
       <div class="function-meta">
-        0x${data.address}
+        0x${functionData.address}
       </div>
 
-      <pre class="code-viewer small-code-viewer">
-        <code
-          class="language-c"
-          id="selectedFunctionCode"
-        >
-${escapeHtml(data.code)}
-        </code>
-      </pre>
+      <div class="ai-explanation-section">
+
+        <div class="section-label">
+          AI Explanation
+        </div>
+
+      <div class="ai-explanation-text">
+        ${marked.parse(explanation)}
+      </div>
+
+      </div>
+
+      <div class="function-code-section">
+
+        <div class="section-label">
+          Decompiled Function
+        </div>
+
+        <pre class="code-viewer small-code-viewer">
+          <code
+            class="language-c"
+            id="selectedFunctionCode"
+          >
+${escapeHtml(functionData.code)}
+          </code>
+        </pre>
+
+      </div>
 
     </div>
   `;

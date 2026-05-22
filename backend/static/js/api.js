@@ -26,7 +26,7 @@ export async function explainFunction(functionName, functionCode) {
     },
 
     body: JSON.stringify({
-      name: functionName,
+      function_name: functionName,
       code: functionCode,
     }),
   });

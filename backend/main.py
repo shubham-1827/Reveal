@@ -6,6 +6,9 @@ from backend.routes.upload_routes import router as upload_router
 from backend.routes.function_routes import (
     router as function_router,
 )
+from backend.routes.ai_routes import (
+    router as ai_router,
+)
 
 app = FastAPI(title="REVEAL")
 
@@ -15,6 +18,7 @@ templates = Jinja2Templates(directory="backend/templates")
 
 app.include_router(upload_router)
 app.include_router(function_router)
+app.include_router(ai_router)
 
 
 @app.get("/")

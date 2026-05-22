@@ -173,6 +173,90 @@ h2 {
   min-height: 220px;
 }
 
+/* MARKDOWN RELATED FORMATING */
+
+.ai-explanation-text h1,
+.ai-explanation-text h2,
+.ai-explanation-text h3,
+.summary-content h1,
+.summary-content h2,
+.summary-content h3 {
+  color: #7aa2f7;
+
+  margin-top: 18px;
+  margin-bottom: 10px;
+
+  font-weight: 700;
+}
+
+.ai-explanation-text p,
+.summary-content p {
+  margin-bottom: 14px;
+
+  line-height: 1.8;
+}
+
+.ai-explanation-text ul,
+.ai-explanation-text ol,
+.summary-content ul,
+.summary-content ol {
+  margin-left: 20px;
+
+  margin-bottom: 16px;
+}
+
+.ai-explanation-text li,
+.summary-content li {
+  margin-bottom: 8px;
+}
+
+.ai-explanation-text code,
+.summary-content code {
+  background-color: #24283b;
+
+  padding: 2px 6px;
+
+  border-radius: 6px;
+
+  font-family: "JetBrains Mono", monospace;
+
+  color: #7dcfff;
+}
+
+.ai-explanation-text pre,
+.summary-content pre {
+  background-color: #111827;
+
+  border: 1px solid #414868;
+
+  border-radius: 8px;
+
+  padding: 14px;
+
+  overflow-x: auto;
+
+  margin-top: 14px;
+  margin-bottom: 18px;
+}
+
+.ai-explanation-text strong,
+.summary-content strong {
+  color: #c0caf5;
+
+  font-weight: 700;
+}
+
+.ai-explanation-text blockquote,
+.summary-content blockquote {
+  border-left: 3px solid #7aa2f7;
+
+  padding-left: 14px;
+
+  margin: 14px 0;
+
+  color: #9aa5ce;
+}
+
 /* CODE VIEWERS */
 
 .code-viewer {
@@ -269,53 +353,50 @@ h2 {
   font-family: monospace;
 }
 
+/* EXPLANATION + SUMMARY PANELS */
+
 .explanation-content,
 .summary-content {
-  font-size: 15px;
-}
-
-.explanation-content {
-  padding: 20px;
-
-  color: #c0caf5;
-
-  line-height: 1.7;
+  height: 500px;
 
   overflow-y: auto;
 
-  height: 500px;
-
-  scroll-behavior: smooth;
-}
-
-.explanation-content code {
-  font-weight: 500;
-}
-
-.summary-content {
-  padding: 20px;
+  padding: 24px;
 
   color: #c0caf5;
 
+  font-size: 15px;
   line-height: 1.8;
 
   scroll-behavior: smooth;
+
+  scrollbar-width: thin;
+
+  animation: explanationFade 0.2s ease;
 }
 
-.function-details {
-  display: flex;
+@keyframes explanationFade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 
-  flex-direction: column;
-
-  gap: 12px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
+/* FUNCTION HEADER */
 
 .function-title {
-  font-size: 16px;
+  font-size: 18px;
 
   font-weight: 700;
 
   color: #7aa2f7;
+
+  margin-bottom: 6px;
 }
 
 .function-meta {
@@ -324,16 +405,134 @@ h2 {
   color: #7d8590;
 
   font-family: "JetBrains Mono", monospace;
+
+  margin-bottom: 28px;
 }
 
+/* SECTION LABELS */
+
+.section-label {
+  margin-bottom: 14px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  color: #7aa2f7;
+}
+
+.ai-explanation-section {
+  margin-bottom: 34px;
+}
+
+.function-code-section {
+  width: 100%;
+}
+
+/* MARKDOWN CONTENT */
+
+.ai-explanation-text {
+  width: 100%;
+}
+
+.ai-explanation-text h1,
+.ai-explanation-text h2,
+.ai-explanation-text h3,
+.summary-content h1,
+.summary-content h2,
+.summary-content h3 {
+  color: #7aa2f7;
+
+  margin-top: 24px;
+  margin-bottom: 14px;
+
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+.ai-explanation-text p,
+.summary-content p {
+  margin-bottom: 16px;
+
+  line-height: 1.8;
+}
+
+.ai-explanation-text ul,
+.ai-explanation-text ol,
+.summary-content ul,
+.summary-content ol {
+  margin-left: 24px;
+
+  margin-bottom: 18px;
+}
+
+.ai-explanation-text li,
+.summary-content li {
+  margin-bottom: 10px;
+}
+
+.ai-explanation-text strong,
+.summary-content strong {
+  color: #ffffff;
+
+  font-weight: 700;
+}
+
+.ai-explanation-text code,
+.summary-content code {
+  background-color: #24283b;
+
+  padding: 2px 6px;
+
+  border-radius: 6px;
+
+  font-size: 14px;
+
+  font-family: "JetBrains Mono", monospace;
+
+  color: #7dcfff;
+}
+
+.ai-explanation-text pre,
+.summary-content pre {
+  background-color: #111827;
+
+  border: 1px solid #414868;
+
+  border-radius: 10px;
+
+  padding: 16px;
+
+  overflow-x: auto;
+
+  margin-top: 18px;
+  margin-bottom: 22px;
+}
+
+.ai-explanation-text blockquote,
+.summary-content blockquote {
+  border-left: 3px solid #7aa2f7;
+
+  padding-left: 16px;
+
+  margin: 18px 0;
+
+  color: #9aa5ce;
+}
+
+/* FUNCTION CODE VIEWER */
+
 .small-code-viewer {
-  height: auto;
+  width: 100%;
 
   max-height: 420px;
 
   border: 1px solid #414868;
 
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 /* BUTTONS */

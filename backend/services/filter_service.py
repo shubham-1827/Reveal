@@ -3,6 +3,12 @@ from backend.services.parser_service import (
 )
 
 BLACKLIST = {
+    "fopen",
+    "fclose",
+    "fgetc",
+    "putchar",
+    "tolower",
+    "toupper",
     "pre_c_init",
     "pre_cpp_init",
     "WinMainCRTStartup",
