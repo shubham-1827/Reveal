@@ -1,5 +1,5 @@
 // dashboard.js
-import { fetchFunction, explainFunction } from "./api.js";
+import { fetchFunction, explainFunction, generateSummary } from "./api.js";
 
 const rawCode = document.getElementById("rawCode");
 
@@ -13,14 +13,14 @@ const summaryContent = document.getElementById("summaryContent");
 
 let selectedFunctionElement = null;
 
-export function renderDashboard(data) {
+export async function renderDashboard(data) {
   renderRawCode(data);
 
   renderFilteredCode(data);
 
   renderFunctionList(data);
 
-  renderSummary(data);
+  await renderSummary(data);
 }
 
 export function resetDashboard() {
@@ -217,11 +217,46 @@ ${escapeHtml(functionData.code)}
   Prism.highlightElement(selectedCode);
 }
 
-function renderSummary(data) {
+async function renderSummary(data) {
+  const functions = data.functions;
+
+  if (!functions || functions.length === 0) {
+    summaryContent.innerHTML = `
+      <div class="empty-state">
+        No executable summary available.
+      </div>
+    `;
+
+    return;
+  }
+
   summaryContent.innerHTML = `
-    <p>
-      Executable summary generation
-      will appear here.
-    </p>
+    <div class="loading-state">
+      Generating executable summary...
+    </div>
   `;
+
+  try {
+    const response = await generateSummary(functions);
+
+    if (!response.ok) {
+      throw new Error("Failed to generate summary");
+    }
+
+    const summaryData = await response.json();
+
+    summaryContent.innerHTML = `
+      <div class="summary-inner">
+        ${marked.parse(summaryData.summary)}
+      </div>
+    `;
+  } catch (error) {
+    console.error(error);
+
+    summaryContent.innerHTML = `
+      <div class="empty-state">
+        Failed to generate summary.
+      </div>
+    `;
+  }
 }

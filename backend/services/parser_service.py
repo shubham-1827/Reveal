@@ -1,13 +1,8 @@
-from dataclasses import dataclass
 import re
 
-
-@dataclass
-class DecompiledFunction:
-    name: str
-    address: str
-    code: str
-
+from backend.models.function_model import (
+    DecompiledFunction,
+)
 
 FUNCTION_HEADER_PATTERN = re.compile(
     r"/\*\s*Function:\s*(.*?)\s*@\s*0x(.*?)\s*\*/",

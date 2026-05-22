@@ -32,7 +32,7 @@ export async function explainFunction(functionName, functionCode) {
   });
 }
 
-export async function generateSummary(code) {
+export async function generateSummary(functions) {
   return fetch(`${API_BASE}/summary`, {
     method: "POST",
 
@@ -41,7 +41,7 @@ export async function generateSummary(code) {
     },
 
     body: JSON.stringify({
-      code,
+      functions,
     }),
   });
 }
