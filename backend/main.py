@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routes.upload_routes import router as upload_router
 from backend.routes.function_routes import (
@@ -11,6 +12,18 @@ from backend.routes.ai_routes import (
 )
 
 app = FastAPI(title="REVEAL")
+
+origins = [
+    "https://reveal-eugpxspie-victor-s-projects-1827.vercel.app",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.mount("/static", StaticFiles(directory="backend/static"), name="static")
 
