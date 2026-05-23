@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>REVEAL</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="./css/style.css" />
+  <link href="https://unpkg.com/automad-prism-themes/dist/prism-tokyo-night.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="logo">REVEAL</h1>
+
+        <p class="subtitle">
+          Reverse Engineering Visual Explanation and Assistance Layer
+        </p>
+      </div>
+
+      <div class="topbar-right">
+        <input type="file" id="fileInput" accept=".exe" hidden />
+
+        <button id="uploadButton" class="upload-button">
+          Upload Executable
+        </button>
+      </div>
+    </header>
+
+    <!-- STATUS BAR -->
+    <section class="status-bar">
+      <p id="uploadStatus">No executable loaded</p>
+    </section>
+
+    <!-- MAIN CODE GRID -->
+    <section class="code-grid">
+      <!-- SECTION A -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Raw Decompiled Code</h2>
+        </div>
+
+        <pre class="code-viewer">
+          <code id="rawCode" class="language-c">
+            No decompiled output available.
+          </code>
+        </pre>
+      </div>
+
+      <!-- SECTION B -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Filtered Code</h2>
+        </div>
+
+        <pre class="code-viewer">
+          <code id="filteredCode" class="language-c">
+            No filtered code available.
+          </code>
+        </pre>
+      </div>
+    </section>
+
+    <!-- LOWER GRID -->
+    <section class="bottom-grid">
+      <!-- SECTION C -->
+      <div class="panel function-panel">
+        <div class="panel-header">
+          <h2>Function List</h2>
+        </div>
+
+        <div id="functionList" class="function-list">
+          <div class="empty-state">No functions detected.</div>
+        </div>
+      </div>
+
+      <!-- SECTION D -->
+      <div class="panel explanation-panel">
+        <div class="panel-header">
+          <h2>AI Function Explanation</h2>
+        </div>
+
+        <div id="functionExplanation" class="explanation-content">
+          <div class="empty-state">
+            Select a function to generate explanation.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION E -->
+    <section class="panel summary-panel">
+      <div class="panel-header">
+        <h2>Executable Summary</h2>
+      </div>
+
+      <div id="summaryContent" class="summary-content">
+        <div class="empty-state">No executable summary available.</div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+
+  <!-- for syntax highlighting -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+  <!-- for markdown parsing  -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</body>
+
+</html>
