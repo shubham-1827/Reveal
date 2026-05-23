@@ -14,7 +14,7 @@ from backend.routes.ai_routes import (
 app = FastAPI(title="REVEAL")
 
 origins = [
-    "https://reveal-eugpxspie-victor-s-projects-1827.vercel.app",
+    "https://reveal-sand.vercel.app",
 ]
 
 app.add_middleware(
