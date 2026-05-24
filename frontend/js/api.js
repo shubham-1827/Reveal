@@ -1,7 +1,6 @@
 // api.js
 
-const API_BASE =
-  "https://qualifications-donations-albany-italia.trycloudflare.com";
+import { API_BASE } from "./config.js";
 
 export async function uploadExecutable(formData) {
   return fetch(`${API_BASE}/upload`, {
