@@ -1,1 +1,2 @@
-export const API_BASE = "https://ash-lifestyle-equally-cove.trycloudflare.com";
+export const API_BASE =
+  "https://manufacturing-audio-thus-impression.trycloudflare.com";

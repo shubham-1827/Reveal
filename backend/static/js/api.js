@@ -1,6 +1,6 @@
 // api.js
 
-const API_BASE = "";
+import { API_BASE } from "./config.js";
 
 export async function uploadExecutable(formData) {
   return fetch(`${API_BASE}/upload`, {
@@ -42,6 +42,20 @@ export async function generateSummary(functions) {
 
     body: JSON.stringify({
       functions,
+    }),
+  });
+}
+
+export async function polishCode(code) {
+  return fetch(`${API_BASE}/polish`, {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      code,
     }),
   });
 }

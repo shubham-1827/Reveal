@@ -17,7 +17,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet" />
 
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="../static/css/style.css" />
   <link href="https://unpkg.com/automad-prism-themes/dist/prism-tokyo-night.css" rel="stylesheet" />
 </head>
 
@@ -44,7 +44,7 @@
 
     <!-- STATUS BAR -->
     <section class="status-bar">
-      <p id="uploadStatus">No executable loaded</p>
+      <p id="uploadStatus">No Executable Loaded</p>
     </section>
 
     <!-- MAIN CODE GRID -->
@@ -65,7 +65,23 @@
       <!-- SECTION B -->
       <div class="panel">
         <div class="panel-header">
-          <h2>Filtered Code</h2>
+          <div class="code-panel-header">
+            <h2 id="codePanelTitle">Filtered Code</h2>
+
+            <div class="code-panel-actions">
+              <div class="code-tabs">
+                <button id="filteredTab" class="code-tab active">
+                  Filtered
+                </button>
+
+                <button id="polishedTab" class="code-tab">Polished</button>
+              </div>
+
+              <button id="polishButton" class="polish-button">
+                Polish Using AI
+              </button>
+            </div>
+          </div>
         </div>
 
         <pre class="code-viewer">
@@ -115,7 +131,7 @@
     </section>
   </div>
 
-  <script type="module" src="/static/js/app.js"></script>
+  <script type="module" src="../static/js/app.js"></script>
 
   <!-- for syntax highlighting -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>

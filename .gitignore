@@ -9,3 +9,4 @@ temp/*
 .idea/
 .vscode/
 .vercel
+.env

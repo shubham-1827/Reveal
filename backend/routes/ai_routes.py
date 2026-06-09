@@ -13,6 +13,10 @@ from backend.services.summary_service import (
     generate_summary,
 )
 
+from backend.services.polish_service import (
+    polish_code,
+)
+
 from backend.models.function_model import (
     DecompiledFunction,
 )
@@ -27,6 +31,10 @@ class ExplainRequest(BaseModel):
 
 class SummaryRequest(BaseModel):
     functions: list[DecompiledFunction]
+
+
+class PolishRequest(BaseModel):
+    code: str
 
 
 @router.post("/explain")
@@ -66,6 +74,30 @@ async def summary(
 
         return {
             "summary": summary,
+        }
+
+    except RuntimeError as error:
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(error),
+        )
+
+
+# ai se polished output ke liye hai yeh endpoint
+@router.post("/polish")
+async def polish(
+    request: PolishRequest,
+):
+
+    try:
+
+        polished_code = polish_code(
+            request.code,
+        )
+
+        return {
+            "polished_code": polished_code,
         }
 
     except RuntimeError as error:

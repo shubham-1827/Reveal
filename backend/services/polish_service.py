@@ -7,50 +7,42 @@ MODEL_NAME = "mistral:7b-instruct"
 TIMEOUT = 250
 
 
-def build_prompt(
-    function_name: str,
+def build_polish_prompt(
     code: str,
 ) -> str:
 
     return f"""
-You are explaining reverse engineered C code.
+Improve the readability of this decompiled C code.
 
 Requirements:
-- Explain only visible logic.
-- Do not hallucinate behavior.
-- Do not invent malware functionality.
-- Keep explanations beginner-friendly.
-- Format the explanation using markdown.
-- Use headings and bullet points where appropriate.
-- Mention:
-  - function purpose
-  - parameters
-  - return value
-  - loops
-  - conditions
-  - important logic
+- Preserve logic exactly.
+- Preserve behavior exactly.
+- Improve variable names.
+- Improve parameter names.
+- Improve formatting.
+- Improve indentation.
+- Improve readability.
 
-Function:
-{function_name}
+Do not:
+- Change functionality.
+- Remove code.
+- Add code.
+- Rewrite algorithms.
+
+Return only the improved C code.
 
 Code:
 {code}
 """
 
 
-def explain_function(
-    function_name: str,
+def polish_code(
     code: str,
 ) -> str:
 
-    prompt = build_prompt(
-        function_name,
-        code,
-    )
-
     payload = {
         "model": MODEL_NAME,
-        "prompt": prompt,
+        "prompt": build_polish_prompt(code),
         "stream": False,
     }
 
@@ -73,9 +65,9 @@ def explain_function(
 
     data = response.json()
 
-    explanation = data.get("response")
+    polished_code = data.get("response")
 
-    if not explanation:
+    if not polished_code:
         raise RuntimeError("Invalid AI response")
 
-    return explanation.strip()
+    return polished_code.strip()

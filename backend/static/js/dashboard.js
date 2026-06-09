@@ -1,9 +1,24 @@
 // dashboard.js
-import { fetchFunction, explainFunction, generateSummary } from "./api.js";
+import {
+  fetchFunction,
+  explainFunction,
+  generateSummary,
+  polishCode,
+} from "./api.js";
 
 const rawCode = document.getElementById("rawCode");
 
 const filteredCode = document.getElementById("filteredCode");
+
+const filteredTab = document.getElementById("filteredTab");
+
+const polishedTab = document.getElementById("polishedTab");
+
+let codeTabsInitialized = false;
+
+const codePanelTitle = document.getElementById("codePanelTitle");
+
+const polishButton = document.getElementById("polishButton");
 
 const functionList = document.getElementById("functionList");
 
@@ -11,9 +26,19 @@ const functionExplanation = document.getElementById("functionExplanation");
 
 const summaryContent = document.getElementById("summaryContent");
 
+// initial state
 let selectedFunctionElement = null;
+let currentFilteredCode = "";
+let currentPolishedCode = null;
+let activeCodeTab = "filtered";
 
 export async function renderDashboard(data) {
+  if (!codeTabsInitialized) {
+    initializeCodeTabs();
+
+    codeTabsInitialized = true;
+  }
+
   renderRawCode(data);
 
   renderFilteredCode(data);
@@ -24,9 +49,20 @@ export async function renderDashboard(data) {
 }
 
 export function resetDashboard() {
-  rawCode.textContent = "No decompiled output available.";
+  currentFilteredCode = "";
+  currentPolishedCode = null;
+  activeCodeTab = "filtered";
 
+  filteredTab.classList.add("active");
+  polishedTab.classList.remove("active");
+
+  codePanelTitle.textContent = "Filtered Code";
+  rawCode.textContent = "No decompiled output available.";
   filteredCode.textContent = "No filtered code available.";
+
+  polishButton.style.display = "inline-block";
+  polishButton.disabled = false;
+  polishButton.textContent = "Polish Using AI";
 
   functionList.innerHTML = `
     <div class="empty-state">
@@ -47,6 +83,49 @@ export function resetDashboard() {
   `;
 }
 
+function initializeCodeTabs() {
+  filteredTab.addEventListener("click", () => switchCodeTab("filtered"));
+
+  polishedTab.addEventListener("click", () => {
+    if (!currentPolishedCode) {
+      return;
+    }
+
+    switchCodeTab("polished");
+  });
+
+  polishButton.addEventListener("click", handlePolishRequest);
+}
+
+function switchCodeTab(tab) {
+  activeCodeTab = tab;
+
+  filteredTab.classList.remove("active");
+  polishedTab.classList.remove("active");
+
+  if (tab === "filtered") {
+    polishButton.style.display = "inline-block";
+
+    filteredTab.classList.add("active");
+
+    codePanelTitle.textContent = "Filtered Code";
+
+    filteredCode.textContent =
+      currentFilteredCode || "No filtered code available.";
+  } else {
+    polishButton.style.display = "none";
+
+    polishedTab.classList.add("active");
+
+    codePanelTitle.textContent = "Polished Code";
+
+    filteredCode.textContent =
+      currentPolishedCode || "No polished code available.";
+  }
+
+  Prism.highlightElement(filteredCode);
+}
+
 function renderRawCode(data) {
   rawCode.textContent = data.raw_code || "No raw decompiled output.";
 
@@ -55,11 +134,9 @@ function renderRawCode(data) {
 }
 
 function renderFilteredCode(data) {
-  filteredCode.textContent =
-    data.filtered_code || "No filtered code available.";
+  currentFilteredCode = data.filtered_code || "";
 
-  // for syntax highlighting
-  Prism.highlightElement(filteredCode);
+  switchCodeTab("filtered");
 }
 
 function renderFunctionList(data) {
@@ -259,4 +336,50 @@ async function renderSummary(data) {
       </div>
     `;
   }
+}
+
+async function handlePolishRequest() {
+  if (currentPolishedCode) {
+    switchCodeTab("polished");
+    return;
+  }
+
+  try {
+    polishButton.disabled = true;
+
+    polishButton.textContent = "Polishing...";
+
+    const response = await polishCode(currentFilteredCode);
+
+    if (!response.ok) {
+      throw new Error("Failed to polish code");
+    }
+
+    const data = await response.json();
+
+    setCurrentPolishedCode(data.polished_code);
+
+    switchCodeTab("polished");
+  } catch (error) {
+    console.error(error);
+
+    alert("Failed to polish code.");
+  } finally {
+    polishButton.disabled = false;
+
+    polishButton.textContent = "Polish Using AI";
+  }
+}
+
+// helper functions for the polish section
+function getCurrentFilteredCode() {
+  return currentFilteredCode;
+}
+
+function getCurrentPolishedCode() {
+  return currentPolishedCode;
+}
+
+function setCurrentPolishedCode(code) {
+  currentPolishedCode = code;
 }
