@@ -1,14 +1,10 @@
-import requests
-
 from backend.services.parser_service import (
     DecompiledFunction,
 )
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-
-MODEL_NAME = "mistral:7b-instruct"
-
-TIMEOUT = 180
+from backend.services.ai_provider import (
+    generate,
+)
 
 SELECTION_RATIO = 0.20
 
@@ -200,50 +196,10 @@ def generate_summary(
     functions: list[DecompiledFunction],
 ) -> str:
 
-    selected_functions = select_summary_functions(
-        functions,
-    )
+    selected_functions = select_summary_functions(functions)
 
-    code_context = build_summary_context(
-        selected_functions,
-    )
+    code_context = build_summary_context(selected_functions)
 
-    prompt = build_summary_prompt(
-        code_context,
-    )
+    prompt = build_summary_prompt(code_context)
 
-    payload = {
-        "model": MODEL_NAME,
-        "prompt": prompt,
-        "stream": False,
-    }
-
-    try:
-
-        response = requests.post(
-            OLLAMA_URL,
-            json=payload,
-            timeout=TIMEOUT,
-        )
-
-    except requests.exceptions.Timeout:
-
-        raise RuntimeError("Summary generation timed out")
-
-    except requests.exceptions.ConnectionError:
-
-        raise RuntimeError("Ollama is not running")
-
-    if response.status_code != 200:
-
-        raise RuntimeError("Failed to generate summary")
-
-    data = response.json()
-
-    summary = data.get("response")
-
-    if not summary:
-
-        raise RuntimeError("Invalid AI response")
-
-    return summary.strip()
+    return generate(prompt)

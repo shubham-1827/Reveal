@@ -1,10 +1,6 @@
-import requests
-
-OLLAMA_URL = "http://localhost:11434/api/generate"
-
-MODEL_NAME = "mistral:7b-instruct"
-
-TIMEOUT = 250
+from backend.services.ai_provider import (
+    generate,
+)
 
 
 def build_polish_prompt(
@@ -39,35 +35,4 @@ Code:
 def polish_code(
     code: str,
 ) -> str:
-
-    payload = {
-        "model": MODEL_NAME,
-        "prompt": build_polish_prompt(code),
-        "stream": False,
-    }
-
-    try:
-
-        response = requests.post(
-            OLLAMA_URL,
-            json=payload,
-            timeout=TIMEOUT,
-        )
-
-    except requests.exceptions.Timeout:
-        raise RuntimeError("AI request timed out")
-
-    except requests.exceptions.ConnectionError:
-        raise RuntimeError("Ollama is not running")
-
-    if response.status_code != 200:
-        raise RuntimeError("Failed to get AI response")
-
-    data = response.json()
-
-    polished_code = data.get("response")
-
-    if not polished_code:
-        raise RuntimeError("Invalid AI response")
-
-    return polished_code.strip()
+    return generate(build_polish_prompt(code))

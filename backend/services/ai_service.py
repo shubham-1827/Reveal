@@ -1,10 +1,6 @@
-import requests
-
-OLLAMA_URL = "http://localhost:11434/api/generate"
-
-MODEL_NAME = "mistral:7b-instruct"
-
-TIMEOUT = 250
+from backend.services.ai_provider import (
+    generate,
+)
 
 
 def build_prompt(
@@ -48,34 +44,6 @@ def explain_function(
         code,
     )
 
-    payload = {
-        "model": MODEL_NAME,
-        "prompt": prompt,
-        "stream": False,
-    }
-
-    try:
-
-        response = requests.post(
-            OLLAMA_URL,
-            json=payload,
-            timeout=TIMEOUT,
-        )
-
-    except requests.exceptions.Timeout:
-        raise RuntimeError("AI request timed out")
-
-    except requests.exceptions.ConnectionError:
-        raise RuntimeError("Ollama is not running")
-
-    if response.status_code != 200:
-        raise RuntimeError("Failed to get AI response")
-
-    data = response.json()
-
-    explanation = data.get("response")
-
-    if not explanation:
-        raise RuntimeError("Invalid AI response")
-
-    return explanation.strip()
+    return generate(
+        prompt,
+    )
