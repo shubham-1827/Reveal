@@ -5,6 +5,10 @@ from backend.services.session_service import (
     get_functions,
 )
 
+from backend.services.callgraph_service import (
+    generate_call_graph,
+)
+
 router = APIRouter()
 
 
@@ -45,3 +49,17 @@ async def fetch_function(name: str):
         "address": function.address,
         "code": function.code,
     }
+
+
+@router.get("/callgraph")
+async def fetch_call_graph():
+
+    functions = get_functions()
+
+    if not functions:
+        return {
+            "nodes": [],
+            "edges": [],
+        }
+
+    return generate_call_graph(functions)

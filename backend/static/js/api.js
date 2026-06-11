@@ -59,3 +59,7 @@ export async function polishCode(code) {
     }),
   });
 }
+
+export async function fetchCallGraph() {
+  return fetch(`${API_BASE}/callgraph`);
+}

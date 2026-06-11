@@ -4,6 +4,7 @@ import {
   explainFunction,
   generateSummary,
   polishCode,
+  fetchCallGraph,
 } from "./api.js";
 
 const rawCode = document.getElementById("rawCode");
@@ -20,7 +21,7 @@ const codePanelTitle = document.getElementById("codePanelTitle");
 
 const polishButton = document.getElementById("polishButton");
 
-const functionList = document.getElementById("functionList");
+const functionGraph = document.getElementById("functionGraph");
 
 const functionExplanation = document.getElementById("functionExplanation");
 
@@ -43,7 +44,8 @@ export async function renderDashboard(data) {
 
   renderFilteredCode(data);
 
-  renderFunctionList(data);
+  // renderFunctionList(data);
+  await renderFunctionGraph();
 
   await renderSummary(data);
 }
@@ -64,7 +66,7 @@ export function resetDashboard() {
   polishButton.disabled = false;
   polishButton.textContent = "Polish Using AI";
 
-  functionList.innerHTML = `
+  functionGraph.innerHTML = `
     <div class="empty-state">
       No functions detected.
     </div>
@@ -139,49 +141,138 @@ function renderFilteredCode(data) {
   switchCodeTab("filtered");
 }
 
-function renderFunctionList(data) {
-  functionList.innerHTML = "";
+async function renderFunctionGraph() {
+  const response = await fetchCallGraph();
 
-  if (!data.functions || data.functions.length === 0) {
-    functionList.innerHTML = `
-      <div class="empty-state">
-        No functions detected.
-      </div>
-    `;
-
+  if (!response.ok) {
     return;
   }
 
-  data.functions.forEach((func) => {
-    const item = createFunctionItem(func);
+  const graphData = await response.json();
+  window.currentGraphData = graphData;
 
-    functionList.appendChild(item);
+  const container = document.getElementById("functionGraph");
+
+  const nodes = new vis.DataSet(graphData.nodes);
+  const edges = new vis.DataSet(graphData.edges);
+
+  // new vis configurations
+  const options = {
+    nodes: {
+      shape: "box",
+
+      margin: 6,
+
+      color: {
+        background: "#1f2a44",
+        border: "#7aa2f7",
+
+        highlight: {
+          background: "#364a82",
+          border: "#89b4fa",
+        },
+      },
+
+      font: {
+        color: "#ffffff",
+        face: "Inter",
+        size: 14,
+      },
+    },
+
+    edges: {
+      width: 1.5,
+
+      arrows: {
+        to: {
+          enabled: true,
+          scaleFactor: 0.7,
+        },
+      },
+
+      smooth: {
+        enabled: true,
+        type: "dynamic",
+      },
+    },
+
+    interaction: {
+      hover: true,
+      navigationButtons: true,
+      zoomView: true,
+      dragView: true,
+      dragNodes: true,
+    },
+
+    physics: {
+      enabled: true,
+
+      barnesHut: {
+        gravitationalConstant: -12000,
+        centralGravity: 0.05,
+        springLength: 200,
+        springConstant: 0.03,
+        damping: 0.15,
+      },
+
+      stabilization: {
+        iterations: 1000,
+      },
+    },
+  };
+
+  const network = new vis.Network(container, { nodes, edges }, options);
+
+  network.fit();
+
+  network.on("click", async (params) => {
+    if (params.nodes.length === 0) {
+      return;
+    }
+
+    const functionName = params.nodes[0];
+
+    network.selectNodes([functionName]);
+    highlightConnections(functionName, nodes, graphData);
+    await handleFunctionClick(functionName);
   });
 }
 
-function createFunctionItem(func) {
-  const item = document.createElement("div");
+// 2 helper functions for graph node highlighting
+function getConnectedNodes(nodeId, graphData) {
+  const connected = new Set();
 
-  item.className = "function-item";
+  connected.add(nodeId);
 
-  item.innerHTML = `
-    <!-- <div class="function-name"> -->
-    <!--   ${func.name} -->
-    <!-- </div> -->
-    <div class="function-name">
-      ${func.name}
-    </div>
+  graphData.edges.forEach((edge) => {
+    if (edge.from === nodeId) {
+      connected.add(edge.to);
+    }
 
-    <div class="function-address">
-      0x${func.address}
-    </div>
-  `;
-
-  item.addEventListener("click", async () => {
-    await handleFunctionClick(func.name, item);
+    if (edge.to === nodeId) {
+      connected.add(edge.from);
+    }
   });
 
-  return item;
+  return connected;
+}
+
+function highlightConnections(selectedNode, nodes, graphData) {
+  const connected = getConnectedNodes(selectedNode, graphData);
+
+  const updates = [];
+
+  nodes.forEach((node) => {
+    updates.push({
+      id: node.id,
+
+      hidden: false,
+
+      opacity: connected.has(node.id) ? 1 : 0.25,
+    });
+  });
+
+  nodes.update(updates);
 }
 
 function escapeHtml(text) {
@@ -191,9 +282,11 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;");
 }
 
-async function handleFunctionClick(functionName, element) {
+async function handleFunctionClick(functionName, element = null) {
   try {
-    updateSelectedFunction(element);
+    if (element) {
+      updateSelectedFunction(element);
+    }
 
     functionExplanation.innerHTML = "";
 

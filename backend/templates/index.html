@@ -19,6 +19,9 @@
 
   <link rel="stylesheet" href="../static/css/style.css" />
   <link href="https://unpkg.com/automad-prism-themes/dist/prism-tokyo-night.css" rel="stylesheet" />
+
+  <!-- for the callgraph -->
+  <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 </head>
 
 <body>
@@ -97,11 +100,11 @@
       <!-- SECTION C -->
       <div class="panel function-panel">
         <div class="panel-header">
-          <h2>Function List</h2>
+          <h2>Function Call Graph</h2>
         </div>
 
-        <div id="functionList" class="function-list">
-          <div class="empty-state">No functions detected.</div>
+        <div id="functionGraph" class="function-graph">
+          <div class="empty-state">No function graph available.</div>
         </div>
       </div>
 
