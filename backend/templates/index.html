@@ -8,7 +8,7 @@
 
   <title>REVEAL</title>
 
-  <link rel="icon" type="image/png" href="./favicon.png" />
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,10 +18,12 @@
     rel="stylesheet" />
 
   <link rel="stylesheet" href="../static/css/style.css" />
-  <link href="https://unpkg.com/automad-prism-themes/dist/prism-tokyo-night.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../static/css/vis-network.min.css" />
+
+  <link href="../static/css/prism-tokyo-night.css" rel="stylesheet" />
 
   <!-- for the callgraph -->
-  <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script type="text/javascript" src="../static/js/vis-network.min.js"></script>
 </head>
 
 <body>
@@ -137,12 +139,10 @@
   <script type="module" src="../static/js/app.js"></script>
 
   <!-- for syntax highlighting -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+  <script src="../static/js/prism.js"></script>
 
   <!-- for markdown parsing  -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="../static/js/marked.min.js"></script>
 </body>
 
 </html>
